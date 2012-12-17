@@ -1,0 +1,2 @@
+gcc -c -I `ocamlc -where` fish_stub.c
+ocamlc -custom -cclib -lssl -cclib -lcrypto base64.o blowfish.o custom_base64.o dh1080.o sha256.o fish_stub.o fish.cmo test.ml
