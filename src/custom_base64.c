@@ -86,3 +86,5 @@ unsigned char *buffer_of_cbase64(char *b64_buffer, unsigned int *size)
    return(buff);
       
 }
+
+#undef BSWAP32

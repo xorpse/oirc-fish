@@ -1,4 +1,6 @@
 
+#include <stdlib.h>
+#include <string.h>
 #include <openssl/dh.h>
 #include <openssl/bn.h>
 
@@ -112,25 +114,4 @@ int dh1080_compute_key(unsigned char *private, unsigned int private_size, unsign
    return(1);
 }
 
-/*
-int main(void)
-{
-   unsigned int pu_s, pr_s, skl;
-   unsigned char *puk, *prk, *s_k;
-
-   if (dh1080_generate_keys(&prk, &pr_s, &puk, &pu_s)) {
-      printf("Private key: "); for (int i = 0; i < pr_s; i++) printf("%02X ", prk[i]);
-      putchar('\n');
-      printf("Public key : "); for (int i = 0; i < pu_s; i++) printf("%02X ", puk[i]);
-      putchar('\n');
-      
-   }
-
-   if (dh1080_compute_key(prk, pr_s, puk, pu_s, &s_k, &skl)) {
-      printf("Shared key : "); for (int i = 0; i < skl; i++) printf("%02X ", s_k[i]);
-      putchar('\n');
-   }
-
-   return(0);
-}
-*/
+#undef dh1080_generator

@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <openssl/blowfish.h>
-#include "custom_base64.h"
 
 unsigned char *blowfish_encrypt_ecb(unsigned char *buffer, unsigned int bufferl, unsigned char *key, unsigned int keyl, unsigned int *nbufferl)
 {
@@ -60,23 +59,3 @@ unsigned char *blowfish_decrypt_ecb(unsigned char *buffer, unsigned int bufferl,
 
    return(nbuffer);
 }
-
-/* EXAMPLE USAGE 
-int main(void)
-{
-   unsigned int inps = 0;
-
-   unsigned char key[] = "abcdefghijklmnopqrstuvwxyz012345";
-
-   unsigned char *buffer = blowfish_encrypt_ecb("Hello, World", 12, key, 32, &inps);
-   unsigned char buffer2[1024];
-
-   for (int i = 0; i < inps; i++) {
-      printf("%02X ", buffer[i]);
-   }
-
-   printf("%s\n", cbase64_of_buffer(buffer, inps, &(int){0}));
-
-   return(0);
-}
-*/
