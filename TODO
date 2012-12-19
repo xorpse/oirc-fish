@@ -3,9 +3,9 @@ TODO
 ----
 
 + Documentation.
++ Check C header inclusions.
 + Add stricter error checking.
 + Purge keys after use.
 + Implement key storage mechanism (perhaps hash table of hash tables, where
   each entry in the parent hash table is an IRC network, and the child tables
   are either channels or user 'nicknames'.
-

@@ -30,7 +30,6 @@
 #define GET_AT_INDEX(EXP, I, IMAX) (((I) < (IMAX)) ? EXP[I] : 0)
       
 const static char base64_lookup[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-//const static char base64_lookup[] = "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 unsigned char *buffer_of_base64(char *b64_buffer, unsigned int *raw_buffer_size)
 {
