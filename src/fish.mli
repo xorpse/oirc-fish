@@ -37,7 +37,6 @@ module Protocol : sig
    val init_key_exchange  : string -> (key_pair * Scmd.t)
    val process_dh_message : key_pair option -> Scmd.t -> (string * Scmd.t option)
 
-   val prepare_key  : string -> string
    val send_message : string -> string -> string -> Scmd.t
    val recv_message : string -> Scmd.t -> Scmd.t
 
