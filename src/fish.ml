@@ -98,7 +98,7 @@ module Protocol = struct
             let dh_init   = Str.regexp "^DH1080_INIT\\ .*$"
             and dh_finish = Str.regexp "^DH1080_FINISH\\ .*$" in
 
-            try
+            (try
                let keys, message, oth_pub =
                   if (Str.string_match dh_init notice 0) then
                      let pr, pu = DH1080.generate () in
@@ -121,6 +121,7 @@ module Protocol = struct
             with
                | Failure _
                | Invalid_argument _ -> raise (Failure "Fish.Protocol.process_dh_message")
+            )
 
       | _ -> raise (Invalid_argument "Fish.Protocol.process_dh_message")
 
