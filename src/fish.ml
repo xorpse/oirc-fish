@@ -5,7 +5,7 @@ module Base64 = struct
    let pad_to_mul_of n s =
       let len = String.length s in
       if len mod n <> 0 then
-         (s ^ (String.make (8 - len mod n) '\x00'))
+         (s ^ (String.make (n - len mod n) '\x00'))
       else
          s
 
