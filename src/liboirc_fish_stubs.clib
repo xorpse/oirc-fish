@@ -1,0 +1,9 @@
+# OASIS_START
+# DO NOT EDIT (digest: 43707efd059bdfd328ef1c7ad2c22148)
+base64.o
+blowfish.o
+custom_base64.o
+dh1080.o
+fish_stub.o
+sha256.o
+# OASIS_STOP

@@ -1,0 +1,18 @@
+OASISFormat: 0.3
+Name:        oirc-fish
+Version:     0.1.0
+Synopsis:    OCaml bindings for (re)implementation of FiSH encryption plugin for IRC
+Authors:     Sam Thomas <s@ghost.sh>
+License:     BSD3
+Plugins:     META (0.3), StdFiles (0.3), DevFiles (0.3)
+
+Library oirc_fish
+   Path:            src/
+   BuildDepends:    ssl
+   BuildTools:      ocamlbuild
+   FindlibName:     oirc_fish
+   Modules:         Fish, Scmd
+   InternalModules: Scmd
+   CSources:        base64.c, base64.h, blowfish.c, blowfish.h, custom_base64.c, custom_base64.h, dh1080.c, dh1080.h, fish_stub.c, sha256.c, sha256.h
+   CCOpt:           -I src/ -std=c99
+   CCLib:           -ldl -lssl -lcrypto

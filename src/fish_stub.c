@@ -20,7 +20,7 @@ CAMLprim value ml_fish_base64_encode_ns(value input)
 
    unsigned int size;
    char *result = \
-      cbase64_of_buffer(String_val(input), caml_string_length(input), &size);
+      cbase64_of_buffer((unsigned char *)String_val(input), caml_string_length(input), &size);
 
    if (result) {
       edata = caml_alloc_string(size - 1);
@@ -60,11 +60,11 @@ CAMLprim value ml_fish_base64_encode_np(value input)
 
    unsigned int size;
    char *result = \
-      base64_of_buffer(String_val(input), caml_string_length(input), &size);
+      base64_of_buffer((unsigned char *)String_val(input), caml_string_length(input), &size);
 
    if (result) {
-      edata = caml_alloc_string(size);
-      memcpy(String_val(edata), result, size);
+      edata = caml_alloc_string(size - 1);
+      memcpy(String_val(edata), result, size - 1);
       free(result);
 
       CAMLreturn(edata);
@@ -100,8 +100,8 @@ CAMLprim value ml_fish_blowfish_encrypt(value key, value data)
 
    unsigned int size;
    unsigned char *result = \
-      blowfish_encrypt_ecb(String_val(data), caml_string_length(data), \
-                           String_val(key),  caml_string_length(key), \
+      blowfish_encrypt_ecb((unsigned char *)String_val(data), caml_string_length(data), \
+                           (unsigned char *)String_val(key),  caml_string_length(key), \
                            &size \
                           );
 
@@ -123,8 +123,8 @@ CAMLprim value ml_fish_blowfish_decrypt(value key, value data)
 
    unsigned int size = caml_string_length(data);
    unsigned char *result = \
-      blowfish_decrypt_ecb(String_val(data), size, \
-                           String_val(key),  caml_string_length(key) \
+      blowfish_decrypt_ecb((unsigned char *)String_val(data), size, \
+                           (unsigned char *)String_val(key),  caml_string_length(key) \
                           );
 
    if (result) {
@@ -176,7 +176,7 @@ CAMLprim value ml_fish_dh1080_compute(value priv, value pub)
    unsigned int sh_s;
    unsigned char *sh_k;
 
-   if (dh1080_compute_key(String_val(priv), caml_string_length(priv), String_val(pub), caml_string_length(pub), &sh_k, &sh_s)) {
+   if (dh1080_compute_key((unsigned char *)String_val(priv), caml_string_length(priv), (unsigned char *)String_val(pub), caml_string_length(pub), &sh_k, &sh_s)) {
       shared = caml_alloc_string(sh_s);
       memcpy(String_val(shared), sh_k, sh_s);
       memset(sh_k, 0, sh_s);
@@ -195,7 +195,7 @@ CAMLprim value ml_fish_sha256_compute(value input)
 
    hash = caml_alloc_string(SHA256_BUFFER_SIZE);
 
-   if (sha256(String_val(input), caml_string_length(input), String_val(hash))) {
+   if (sha256((unsigned char *)String_val(input), caml_string_length(input), (unsigned char *)String_val(hash))) {
       CAMLreturn(hash);
    } else {
       caml_failwith("Fish.SHA256.compute");

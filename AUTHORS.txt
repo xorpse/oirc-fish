@@ -1,0 +1,5 @@
+(* OASIS_START *)
+(* DO NOT EDIT (digest: ac118b08f4ee684557c5545ef6cb2d9c) *)
+Authors of oirc-fish
+Sam Thomas <s@ghost.sh>
+(* OASIS_STOP *)

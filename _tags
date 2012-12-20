@@ -1,0 +1,38 @@
+# OASIS_START
+# DO NOT EDIT (digest: affa2fbb6a985da359fd71e88ed1fa46)
+# Ignore VCS directories, you can use the same kind of rule outside 
+# OASIS_START/STOP if you want to exclude directories that contains 
+# useless stuff for the build process
+<**/.svn>: -traverse
+<**/.svn>: not_hygienic
+".bzr": -traverse
+".bzr": not_hygienic
+".hg": -traverse
+".hg": not_hygienic
+".git": -traverse
+".git": not_hygienic
+"_darcs": -traverse
+"_darcs": not_hygienic
+# Library oirc_fish
+"src/oirc_fish.cmxs": use_oirc_fish
+<src/*.ml{,i}>: oasis_library_oirc_fish_ccopt
+"src/base64.c": oasis_library_oirc_fish_ccopt
+"src/blowfish.c": oasis_library_oirc_fish_ccopt
+"src/custom_base64.c": oasis_library_oirc_fish_ccopt
+"src/dh1080.c": oasis_library_oirc_fish_ccopt
+"src/fish_stub.c": oasis_library_oirc_fish_ccopt
+"src/sha256.c": oasis_library_oirc_fish_ccopt
+<src/oirc_fish.{cma,cmxa}>: oasis_library_oirc_fish_cclib
+"src/liboirc_fish_stubs.lib": oasis_library_oirc_fish_cclib
+"src/dlloirc_fish_stubs.dll": oasis_library_oirc_fish_cclib
+"src/liboirc_fish_stubs.a": oasis_library_oirc_fish_cclib
+"src/dlloirc_fish_stubs.so": oasis_library_oirc_fish_cclib
+<src/oirc_fish.{cma,cmxa}>: use_liboirc_fish_stubs
+<src/*.ml{,i}>: pkg_ssl
+"src/base64.c": pkg_ssl
+"src/blowfish.c": pkg_ssl
+"src/custom_base64.c": pkg_ssl
+"src/dh1080.c": pkg_ssl
+"src/fish_stub.c": pkg_ssl
+"src/sha256.c": pkg_ssl
+# OASIS_STOP

@@ -1,0 +1,13 @@
+# OASIS_START
+# DO NOT EDIT (digest: d197d51682b3cad02af0b9f99da23f95)
+version = "0.1.0"
+description =
+"OCaml bindings for (re)implementation of FiSH encryption plugin for IRC"
+requires = "ssl"
+archive(byte) = "oirc_fish.cma"
+archive(byte, plugin) = "oirc_fish.cma"
+archive(native) = "oirc_fish.cmxa"
+archive(native, plugin) = "oirc_fish.cmxs"
+exists_if = "oirc_fish.cma"
+# OASIS_STOP
+

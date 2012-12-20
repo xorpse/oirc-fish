@@ -11,7 +11,7 @@
 #define BASE64_TABLE_SIZE 256
 
 #define BASE64_INIT(TABLE) \
-   memset(TABLE, 0, BASE64_TABLE_SIZE); \
+   memset(TABLE, 0xff, BASE64_TABLE_SIZE); \
    for (int i = 0; i < sizeof(base64_lookup); i++) { \
       TABLE[(unsigned int)base64_lookup[i]] = i; \
    }
@@ -45,7 +45,8 @@ unsigned char *buffer_of_base64(char *b64_buffer, unsigned int *raw_buffer_size)
    BASE64_INIT(base64_local)
 
    /* Find end of base64 string (could be padded.. */
-   for (i = length - 1; i >= 0 && !base64_local[b64_buffer[i]]; i--, length--);
+
+   for (i = length - 1; i >= 0 && base64_local[(unsigned int)b64_buffer[i]] == 0xff; i--, length--);
 
    *raw_buffer_size = BASE64_OBUFFER_SIZE(length);
 
@@ -54,15 +55,15 @@ unsigned char *buffer_of_base64(char *b64_buffer, unsigned int *raw_buffer_size)
    }
 
    for (i = 0, j = 0; ;) {
-      CONTP(j + 1 < length, raw_buffer[i]   |= base64_local[b64_buffer[j++]] << 2)
-      CONTP(j < length,     raw_buffer[i++] |= base64_local[b64_buffer[j]]   >> 4)
-      CONTP(j + 1 < length, raw_buffer[i]   |= base64_local[b64_buffer[j++]] << 4)
-      CONTP(j < length,     raw_buffer[i++] |= base64_local[b64_buffer[j]]   >> 2)
-      CONTP(j + 1 < length, raw_buffer[i]   |= base64_local[b64_buffer[j++]] << 6)
-      CONTP(j < length,     raw_buffer[i++] |= base64_local[b64_buffer[j++]])
+      CONTP(j + 1 < length, raw_buffer[i]   |= base64_local[(unsigned int)b64_buffer[j++]] << 2)
+      CONTP(j < length,     raw_buffer[i++] |= base64_local[(unsigned int)b64_buffer[j]]   >> 4)
+      CONTP(j + 1 < length, raw_buffer[i]   |= base64_local[(unsigned int)b64_buffer[j++]] << 4)
+      CONTP(j < length,     raw_buffer[i++] |= base64_local[(unsigned int)b64_buffer[j]]   >> 2)
+      CONTP(j + 1 < length, raw_buffer[i]   |= base64_local[(unsigned int)b64_buffer[j++]] << 6)
+      CONTP(j < length,     raw_buffer[i++] |= base64_local[(unsigned int)b64_buffer[j++]])
    }
 
-   *raw_buffer_size++;
+   *raw_buffer_size = i;
       
    return(raw_buffer);
 }
@@ -85,15 +86,15 @@ char *base64_of_buffer(unsigned char *raw_buffer, const unsigned int raw_buffer_
       CONTP(j < *b64_buffer_size, \
             b64_buffer[j++] = base64_lookup[GET_AT_INDEX(raw_buffer, i, raw_buffer_size) >> 2]);
       CONTP(j < *b64_buffer_size, \
-            b64_buffer[j++] = base64_lookup[GET_AT_INDEX(raw_buffer, i, raw_buffer_size) << 4 & 0x3f | GET_AT_INDEX(raw_buffer, i + 1, raw_buffer_size) >> 4]);
+            b64_buffer[j++] = base64_lookup[(GET_AT_INDEX(raw_buffer, i, raw_buffer_size) << 4 & 0x3f) | (GET_AT_INDEX(raw_buffer, i + 1, raw_buffer_size) >> 4)]);
       CONTP(j < *b64_buffer_size, \
-            b64_buffer[j++] = base64_lookup[GET_AT_INDEX(raw_buffer, i + 1, raw_buffer_size) << 2 & 0x3f | GET_AT_INDEX(raw_buffer, i + 2, raw_buffer_size) >> 6]);
+            b64_buffer[j++] = base64_lookup[(GET_AT_INDEX(raw_buffer, i + 1, raw_buffer_size) << 2 & 0x3f) | (GET_AT_INDEX(raw_buffer, i + 2, raw_buffer_size) >> 6)]);
       CONTP(j < *b64_buffer_size, \
             b64_buffer[j++] = base64_lookup[GET_AT_INDEX(raw_buffer, i + 2, raw_buffer_size) & 0x3f]);
    }
 
    b64_buffer[*b64_buffer_size] = '\0';
-   *b64_buffer_size++;
+   *b64_buffer_size += 1;
 
    return(b64_buffer); /* length + 1 */
 

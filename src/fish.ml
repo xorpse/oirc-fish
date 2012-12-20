@@ -18,8 +18,10 @@ module Base64 = struct
    let decode_np s =
       let sc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" in
       try
-         sequence_of sc s;
-         decode_np_nv s
+         (* Remove the padding if there is any *)
+         let s' = try String.sub s 0 (String.index s '=') with Not_found -> s in
+         sequence_of sc s'; (* validate the string *)
+         decode_np_nv s'
       with
          | Not_found -> raise (Failure "Fish.Base64.decode_np")
 
@@ -126,7 +128,7 @@ module Protocol = struct
                (* Fix for key exchange with FiSH 10 implementation using DH1080_INIT <KEY> CBC *)
                let oth_pub =
                   try
-                     String.sub oth_pub 0 (String.index ' ')
+                     String.sub oth_pub 0 (String.index oth_pub ' ')
                   with
                      | Not_found -> oth_pub
                in
