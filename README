@@ -1,0 +1,5 @@
+
+oirc-fish : implementation of FiSH IRC encryption protocol
+------------------------------------------------------------------------------
+See TODO for things that have yet to be implemented. As of yet, building the
+library is by hand, however OASIS build support is planned.
