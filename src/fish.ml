@@ -123,6 +123,14 @@ module Protocol = struct
                      raise (Invalid_argument "Fish.Protocol.dh_process_message")
                in
 
+               (* Fix for key exchange with FiSH 10 implementation using DH1080_INIT <KEY> CBC *)
+               let oth_pub =
+                  try
+                     String.sub oth_pub 0 (String.index ' ')
+                  with
+                     | Not_found -> oth_pub
+               in
+
                let sk = DH1080.compute keys.pr_k (Base64.decode_np oth_pub) in
                purge_keys keys;
                (prepare_key sk, message)
