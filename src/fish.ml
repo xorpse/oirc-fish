@@ -70,6 +70,13 @@ module Protocol = struct
          String.set s i '\x00'
       done
 
+   let message_to_text s =
+      try
+         String.sub s 0 (String.index s '\x00')
+      with
+         | Invalid_argument _
+         | Not_found -> s
+
    let purge_keys { pr_k = pr_k; pu_k = pu_k } =
       zero_string pr_k;
       zero_string pu_k
@@ -80,12 +87,12 @@ module Protocol = struct
    let dh_finish_msg target key =
       Scmd.MSG_NOTICE (target, ("DH1080_FINISH " ^ (Base64.encode_np key)))
    
-   let init_key_exchange target =
+   let dh_init_key_exchange target =
       try
          let pr, pu = DH1080.generate () in
          ({ pr_k = pr; pu_k = pu}, dh_init_msg target pu)
       with
-         | Failure _ -> raise (Failure "Fish.Protocol.init_key_exchange")
+         | Failure _ -> raise (Failure "Fish.Protocol.dh_init_key_exchange")
 
    let prepare_key key =
       try
@@ -93,7 +100,7 @@ module Protocol = struct
       with
          | Failure _ -> raise (Failure "Fish.Protocol.prepare_key")
 
-   let process_dh_message keys = function
+   let dh_process_message keys = function
       | Scmd.MSG_NOTICE (target, notice) ->
             let dh_init   = Str.regexp "^DH1080_INIT\\ .*$"
             and dh_finish = Str.regexp "^DH1080_FINISH\\ .*$" in
@@ -107,23 +114,24 @@ module Protocol = struct
                   
                   else if (Str.string_match dh_finish notice 0) then
                      let kp = match keys with
-                        | None -> raise (Failure "Fish.Protocol.process_dh_message")
+                        | None -> raise (Failure "Fish.Protocol.dh_process_message")
                         | Some kp -> kp
                      in
                      (kp, None, String.sub notice 14 (String.length notice - 14))
 
                   else
-                     raise (Invalid_argument "Fish.Protocol.process_dh_message")
+                     raise (Invalid_argument "Fish.Protocol.dh_process_message")
                in
+
                let sk = DH1080.compute keys.pr_k (Base64.decode_np oth_pub) in
                purge_keys keys;
                (prepare_key sk, message)
             with
                | Failure _
-               | Invalid_argument _ -> raise (Failure "Fish.Protocol.process_dh_message")
+               | Invalid_argument _ -> raise (Failure "Fish.Protocol.dh_process_message")
             )
 
-      | _ -> raise (Invalid_argument "Fish.Protocol.process_dh_message")
+      | _ -> raise (Invalid_argument "Fish.Protocol.dh_process_message")
 
    let send_message who key message =
       try
@@ -136,7 +144,7 @@ module Protocol = struct
             (try
                if (Str.string_match (Str.regexp "^\\+OK\\ .*$") msg 0) then
                   let rm = Base64.decode_ns (String.sub msg 4 (String.length msg - 4)) in
-                  Scmd.MSG_PRIVMSG (who, Blowfish.decrypt key rm)
+                  Scmd.MSG_PRIVMSG (who, message_to_text (Blowfish.decrypt key rm))
                else
                   raise (Invalid_argument "Fish.Protocol.recv_message")
             with
